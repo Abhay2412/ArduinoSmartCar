@@ -24,6 +24,19 @@ pinMode(echoPin, INPUT);       //The echo pin is the input
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+Serial.println(ultraSonicDistance());  //Calling the method of the distance in cm 
+ if (millis() > 10000)
+    ultraSonicSensorServo.write(180); //Turns left at full speed 
+  else if (millis() > 2000)
+    ultraSonicSensorServo.write(0); //Turns right at full speed after 2 seconds
 
+}
+long ultraSonicDistance(){  //Method will return the distance from the ultrasonic sensor 
+  digitalWrite(trigPin, LOW); //Sets it to low so off the trigger pin is at 0V
+  delayMicroseconds(2);                       // Delay for 2 Microseconds
+  digitalWrite(trigPin, HIGH); //Sets it to high so the trigger pin is at maximum voltagr
+  delayMicroseconds(10);                      // Delay for 10 Microseconds
+  digitalWrite(trigPin, LOW); //Sets it to low so off the trigger pin is at 0V
+  long duration = pulseIn(echoPin, HIGH); 
+  distance = duration*0.034/ 2; //Using the data sheet
 }
