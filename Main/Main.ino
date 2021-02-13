@@ -11,14 +11,16 @@
 Servo ultraSonicSensorServo;       //Creating the servo object from the imported library
 MPU6050 gyroAccelTemp;
 
-#define ENA 5
-#define ENB 6
-#define IN1 7
-#define IN2 8
-#define IN3 9
-#define IN4 11
+/*Arduino pin is connected to the Motor drive module*/
+#define ENA 5                                // Enable input for right motors
+#define ENB 6                                // Enable input for left motors
+#define IN1 7                                // Left forward motion
+#define IN2 8                                // Left backward motion
+#define IN3 9                                // Right backward motion
+#define IN4 11                               // Right forward motion
 
-#define GYRO_Z_OFFSET 60                     // Determined using IMU_Zero under File > Examples > MPU6050
+
+#define GYRO_Z_OFFSET 60                     // Determined using IMU_Zero under File > Examples > MPU6050 from the provided file
 
 
 
@@ -30,20 +32,20 @@ const int echoPin = A4;           //Echo Pin of the Ultrasonic Sensor
 long distance;                   //Distance which is measured in cm
 long duration;                   //Duration of the echoPin how long it takes for pulse to travel
 
-  float gyroZ =0;
-  float gyroBefore = 0;
+  float gyroZ = 0; //Gyro current value 
+  float gyroBefore = 0; //Gyro value before 
   
 unsigned long timer = 0;
 float timeStep = 0.01;
 
-int currentLap =0;
+int currentLap = 0;    //The current lap of the SmartCar 
 int currentLapRev = 0;
 int numberOfLap1 = 2;
 
-bool forward = true;
-bool reverse = false;
+bool forward = true;  //Default it will function forward 
+bool reverse = false; //Afterward it will switch over to reverse
 
-float gyroDegree;
+float gyroDegree;  //The angle of the gyroscope in degrees
 
 bool isFirstLoopComplete;                  // Declaring the isFirstLoopComplete boolean flag
   float previousTime;                        // Declaring the value to hold the time
@@ -111,36 +113,39 @@ void loop() {
                           isFirstLoopComplete = true;
                          }
                       Serial.println();
-                      // Print out Gyroscope data
+                      // Print out Gyroscope data to the serial monitor 
                       Serial.print("Gyroscope (degrees)\t\tZ: ");
                       Serial.println(gyroDegree);
   
       while(forward){
-      
-             if(ultrasonicDistanceInCM() < 13){                            //If robot is closer than 13cm than turn left slightly
-              wideTurnLeft();  
-              delay(300);
-              moveForward();
+      //This is the making the car move forward around the object in the inital direction 
+             if(ultrasonicDistanceInCM() < 13){                            //If robot is closer than 13cm then turn left wide
+              wideTurnLeft();  //Does a wide turn left around the object 
+              delay(300); //Delays for 3ms 
+              moveForward(); //This makes the car keep on moving forward once it completes the left turn 
              }
-            
-                else if(ultrasonicDistanceInCM() > 20){ 
+            //If that is not true it continues to this statement in which it does a right turn wide similary to the left turn instead 
+                else if(ultrasonicDistanceInCM() > 20){ //Greater than 20cm instead 
                  wideTurnRight(); 
                   delay(300);   
                   moveForward();
                 }
+                //This if statement here checks for one our car completes a lap which icnrements the currentLap we are on
                 if(gyroDegree <-360*currentLap){
                   currentLap++;
                   
                 }
+                //Checks once we have completed enough laps to change the boolean value of forward to false and retirves the gyroBefore value from currently it is at 
+                //Then it breaks out of this if statement momentartily to proceeding what is outside of it
                 if(currentLap==7){
                   gyroBefore = gyroDegree;
                   forward = false;
                   break;
                 }
             
-              
+                      //Implemented from the Data sheets 
                       gyroZ = gyroAccelTemp.getRotationZ() / 131.0;
-                      
+                      //Using the reference code for the calculations determining the time it takes for completeting it loop 
                       if (isFirstLoopComplete) {
                           float timeForOneLoop = micros() - previousTime;
                           //Serial.println(timeForOneLoop);
@@ -159,7 +164,7 @@ void loop() {
                       Serial.println(gyroDegree);
                           
       }
-
+//This if statement starts the reverse car functionality in our smartcar checks for the current lap in the inital direction 
 if(currentLap==7){
   setMaxSpeed();
   TurnAround();
@@ -167,7 +172,7 @@ if(currentLap==7){
   stopMovingForever();
 }                                                    
 
-
+//Using the similar method as forward instead using the reverse boolean 
     while(reverse){
           setMotorSpeed(170);                                               //Set motor speed 100 out of 255
           moveForward();
@@ -212,7 +217,7 @@ if(currentLap==7){
                         Serial.print("Gyroscope (degrees)\t\tZ: ");
                         Serial.println(gyroDegree);
                             }
-
+//This is checking for reverse laps now if the car has completed the correct amount 
 if(currentLapRev==6){
   moveForward();
   delay(5);
