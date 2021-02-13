@@ -119,15 +119,15 @@ void loop() {
   
       while(forward){
       //This is the making the car move forward around the object in the inital direction 
-             if(ultrasonicDistanceInCM() < 13){                            //If robot is closer than 13cm then turn left wide
+             if(ultrasonicDistanceInCM() < 15){                            //If robot is closer than 15cm then turn left wide
               wideTurnLeft();  //Does a wide turn left around the object 
-              delay(300); //Delays for 3ms 
+              delay(210); //Delays for 2.1ms 
               moveForward(); //This makes the car keep on moving forward once it completes the left turn 
              }
             //If that is not true it continues to this statement in which it does a right turn wide similary to the left turn instead 
-                else if(ultrasonicDistanceInCM() > 20){ //Greater than 20cm instead 
+                else if(ultrasonicDistanceInCM() > 25){ //Greater than 20cm instead 
                  wideTurnRight(); 
-                  delay(300);   
+                  delay(200);   
                   moveForward();
                 }
                 //This if statement here checks for one our car completes a lap which icnrements the currentLap we are on
@@ -174,21 +174,21 @@ if(currentLap==7){
 
 //Using the similar method as forward instead using the reverse boolean 
     while(reverse){
-          setMotorSpeed(170);                                               //Set motor speed 100 out of 255
+          setMotorSpeed(210);                                               //Set motor speed 210 out of 255
           moveForward();
            delay(1);
-                 if(ultrasonicDistanceInCM() < 13){                            //If robot is closer than 13cm than turn left slightly
+                 if(ultrasonicDistanceInCM() < 15){                            //If robot is closer than 15cm than turn right wide
                   wideTurnRight();  
-                  delay(300);
+                  delay(200); Delay of 2ms 
                   moveForward();
                  }
             
-                else if(ultrasonicDistanceInCM() > 20){ 
+                else if(ultrasonicDistanceInCM() > 25){ 
                  wideTurnLeft(); 
-                  delay(300);   
+                  delay(200);   
                   moveForward();
                 }
-                if(gyroDegree >(-360*currentLapRev+110)){      //+180 //Keep in mind the gyroscope starts at -1800+180 degrees for the reverse
+                if(gyroDegree >(-360*currentLapRev+170)){      //+180 //Keep in mind the gyroscope starts at -1800+180 degrees for the reverse
                   currentLapRev++;               
                   
                 }
@@ -219,9 +219,7 @@ if(currentLap==7){
                             }
 //This is checking for reverse laps now if the car has completed the correct amount 
 if(currentLapRev==6){
-  moveForward();
-  delay(5);
-  if(ultrasonicDistanceInCM() > 40){
+  if(ultrasonicDistanceInCM() > 10){
     stopMovingForever();
     
   }
